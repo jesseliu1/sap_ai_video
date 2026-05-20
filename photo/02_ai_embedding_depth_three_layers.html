@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI嵌入深度三层模型</title>
+<style>
+  :root {
+    --c-primary: #165DFF;
+    --c-primary-dark: #0E4BDB;
+    --c-ai: #2F80ED;
+    --c-text-main: #2B2F36;
+    --c-text-sub: #6B7280;
+    --c-bg-light: #F4F6F8;
+    --c-bg-blue: #E8F3FF;
+    --c-border: #E5E7EB;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 800px;
+    height: 450px;
+    background: #FFFFFF;
+    font-family: "Microsoft YaHei", "PingFang SC", "Helvetica Neue", sans-serif;
+    overflow: hidden;
+  }
+
+  .container {
+    width: 800px;
+    height: 450px;
+    padding: 26px 36px 22px;
+    position: relative;
+  }
+
+  .title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--c-text-main);
+    letter-spacing: 0.02em;
+  }
+
+  .layers {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 18px;
+  }
+
+  .layer {
+    display: flex;
+    align-items: stretch;
+    border-radius: 4px;
+    overflow: hidden;
+    height: 74px;
+    border: 1px solid;
+  }
+
+  .layer-label {
+    width: 148px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 16px;
+  }
+
+  .layer-num {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    margin-bottom: 4px;
+  }
+
+  .layer-name {
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.35;
+  }
+
+  .layer-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    padding: 0 18px;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 9px;
+    border-radius: 2px;
+    font-size: 11px;
+    font-weight: 500;
+    white-space: nowrap;
+    border: 1px solid transparent;
+  }
+
+  .layer-badges {
+    width: 116px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 5px;
+    padding: 0 14px;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+
+  .layer-1 { background: #FFFFFF; border-color: var(--c-border); }
+  .layer-1 .layer-label { background: var(--c-bg-light); border-right: 1px solid var(--c-border); }
+  .layer-1 .layer-num { color: var(--c-text-sub); }
+  .layer-1 .layer-name { color: var(--c-text-main); }
+  .layer-1 .tag { background: #FFFFFF; color: #4B5563; border-color: #D1D5DB; }
+  .layer-1 .badge-val { background: #D1FAE5; color: #065F46; }
+  .layer-1 .badge-door { background: #F3F4F6; color: #4B5563; border: 1px solid #D1D5DB; }
+
+  .layer-2 { background: #FFFFFF; border-color: #BFDBFE; }
+  .layer-2 .layer-label { background: var(--c-bg-blue); border-right: 1px solid #BFDBFE; }
+  .layer-2 .layer-num { color: var(--c-ai); }
+  .layer-2 .layer-name { color: var(--c-primary); }
+  .layer-2 .tag { background: var(--c-bg-blue); color: var(--c-primary); }
+  .layer-2 .badge-val { background: #D1FAE5; color: #065F46; }
+  .layer-2 .badge-door { background: #FEF3C7; color: #92400E; }
+
+  .layer-3 { background: var(--c-primary); border-color: var(--c-primary); }
+  .layer-3 .layer-label { background: var(--c-primary-dark); }
+  .layer-3 .layer-num { color: #93C5FD; }
+  .layer-3 .layer-name { color: #FFFFFF; }
+  .layer-3 .tag { background: rgba(255,255,255,0.15); color: #FFFFFF; }
+  .layer-3 .badge-val { background: rgba(255,255,255,0.2); color: #FFFFFF; }
+  .layer-3 .badge-warn { background: #FEF2F2; color: #991B1B; }
+
+  .bottom-note {
+    position: absolute;
+    left: 36px;
+    right: 36px;
+    bottom: 22px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .note-bar {
+    width: 3px;
+    height: 28px;
+    background: var(--c-primary);
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  .note-text {
+    font-size: 12px;
+    color: #4B5563;
+    line-height: 1.5;
+    font-weight: 500;
+  }
+
+  .note-text strong { color: var(--c-primary); }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="title">AI在SAP乙方交付中的三层嵌入深度</div>
+
+  <div class="layers">
+    <div class="layer layer-1">
+      <div class="layer-label">
+        <div class="layer-num">LAYER 01</div>
+        <div class="layer-name">AI离线辅助<br>无系统对接</div>
+      </div>
+      <div class="layer-content">
+        <span class="tag">工单摘要</span>
+        <span class="tag">补料清单</span>
+        <span class="tag">RCA草稿</span>
+        <span class="tag">测试证据</span>
+        <span class="tag">知识库初稿</span>
+      </div>
+      <div class="layer-badges">
+        <span class="badge badge-val">✓ 门槛最低</span>
+        <span class="badge badge-door">建议先做</span>
+      </div>
+    </div>
+
+    <div class="layer layer-2">
+      <div class="layer-label">
+        <div class="layer-num">LAYER 02</div>
+        <div class="layer-name">AI关联<br>乙方交付系统</div>
+      </div>
+      <div class="layer-content">
+        <span class="tag">自动分类建议</span>
+        <span class="tag">SLA风险提醒</span>
+        <span class="tag">相似工单检索</span>
+        <span class="tag">重复问题识别</span>
+        <span class="tag">月报趋势分析</span>
+      </div>
+      <div class="layer-badges">
+        <span class="badge badge-val">✓ 价值稳定</span>
+        <span class="badge badge-door">需系统对接</span>
+      </div>
+    </div>
+
+    <div class="layer layer-3">
+      <div class="layer-label">
+        <div class="layer-num">LAYER 03</div>
+        <div class="layer-name">AI关联<br>客户SAP环境</div>
+      </div>
+      <div class="layer-content">
+        <span class="tag">读取报错日志</span>
+        <span class="tag">关联传输记录</span>
+        <span class="tag">接口状态分析</span>
+        <span class="tag">影响范围辅助</span>
+        <span class="tag">变更风险检查</span>
+      </div>
+      <div class="layer-badges">
+        <span class="badge badge-val">✓ 价值最大</span>
+        <span class="badge badge-warn">边界最严</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-note">
+    <div class="note-bar"></div>
+    <div class="note-text">三层不是非此即彼，而是渐进落地路径。<strong>先从第一层开始，不急着接SAP。</strong></div>
+  </div>
+</div>
+</body>
+</html>
